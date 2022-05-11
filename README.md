@@ -160,3 +160,54 @@ Dimension table that contains a row for each timestamp, with columns with prepro
 | month      | INT       |              |
 | year       | INT       |              |
 | weekday    | INT       |              |
+
+## Sample queries
+
+1. Number of and percent of paid vs. free users by week
+
+```
+WITH free_vs_paid AS (
+	SELECT
+	  user_id,
+	  start_time,
+	  CASE WHEN "level" = 'paid' THEN 1 ELSE 0 END AS paid_user,
+	  CASE WHEN "level" = 'free' THEN 1 ELSE 0 END AS free_user
+	FROM songplays
+)
+SELECT
+	week,
+	SUM(paid_user) AS paid_users,
+	SUM(free_user) AS free_users,
+	ROUND(SUM(paid_user) * 100.0 / (SUM(free_user) + SUM(paid_user)), 1) as pct_paid
+FROM free_vs_paid
+INNER JOIN time ON free_vs_paid.start_time = time.start_time
+GROUP BY week
+ORDER BY week
+```
+
+2. Top 10 most active paid users by songs played
+
+```
+SELECT
+first_name || ' ' || last_name AS username,
+COUNT(songplay_id) AS songs_played
+FROM songplays
+INNER JOIN users ON songplays.user_id = users.user_id
+WHERE users.level = 'paid'
+GROUP BY user_name
+ORDER BY songs_played DESC
+LIMIT 10
+```
+
+3. Top 5 artists by number of songs played
+
+```
+SELECT
+	name AS artist,
+	COUNT(songplay_id) AS songs_played
+FROM songplays
+INNER JOIN artists ON songplays.artist_id = artists.artist_id
+GROUP BY name
+ORDER BY songs_played DESC
+LIMIT 5
+```
