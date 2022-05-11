@@ -12,10 +12,10 @@ def load_staging_tables(cur, conn):
     ----------
 
     cur : string
-        The database cursor used to insert records in the database.
+        The database cursor used to copy records into the `dwh` database.
 
     conn : string
-        The connection string used to connect to the database.
+        The Redshift database connection.
     """
     for query in copy_table_queries:
         cur.execute(query)
@@ -31,10 +31,10 @@ def insert_tables(cur, conn):
     ----------
 
     cur : string
-        The database cursor used to insert records in the database.
+        The database cursor used to insert records in the `dwh` database.
 
     conn : string
-        The connection string used to connect to the database.
+        The Redshift database connection.
     """
     for query in insert_table_queries:
         cur.execute(query)

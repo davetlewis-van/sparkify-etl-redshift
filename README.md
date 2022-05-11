@@ -194,7 +194,7 @@ COUNT(songplay_id) AS songs_played
 FROM songplays
 INNER JOIN users ON songplays.user_id = users.user_id
 WHERE users.level = 'paid'
-GROUP BY user_name
+GROUP BY username
 ORDER BY songs_played DESC
 LIMIT 10
 ```
